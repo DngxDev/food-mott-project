@@ -239,7 +239,7 @@ function logout() {
             tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Đang tải dữ liệu...</td></tr>';
 
             try {
-                const response = await fetch('http://localhost:5000/api/admin/orders');
+                const response = await fetch('https://food-mott-project.onrender.com/api/admin/orders');
                 const orders = await response.json();
 
                 tableBody.innerHTML = ''; // Xóa chữ Đang tải
@@ -286,7 +286,7 @@ actionButtons = btnView + actionButtons;
         }
 async function updateStatus(orderId, newStatus) {
             try {
-                const response = await fetch(`http://localhost:5000/api/admin/orders/${orderId}/status`, {
+                const response = await fetch(`https://food-mott-project.onrender.com/api/admin/orders/${orderId}/status`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ status: newStatus })
