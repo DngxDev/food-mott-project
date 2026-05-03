@@ -186,7 +186,7 @@ user = cursor.fetchone()
 
         if user:
             # Nếu đúng, trả về một "token" giả định để lưu ở trình duyệt
-            if user.Username == input_username and user.Password == input_password:
+            if user.Username == username and user.Password == password:
             return jsonify({'message': 'Đăng nhập thành công', 'token': 'access_granted_admin'}), 200
         else:
             return jsonify({'message': 'Sai tài khoản hoặc mật khẩu!'}), 401
