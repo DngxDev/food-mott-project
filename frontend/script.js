@@ -46,6 +46,7 @@ function renderMenu(foods) {
     }
 
     foods.forEach(food => {
+        console.log("Dữ liệu món ăn:", food);
         const card = document.createElement("div");
         card.className = "food-card";
         
