@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tra Cứu Đơn Hàng - Food Mốtt</title>
+    <!-- Nhúng Font chữ và CSS dùng chung của trang web -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css"> 
+    
+    <style>
+        /* Tùy chỉnh thêm CSS cho riêng phần tra cứu */
+        .track-section { padding: 60px 20px; max-width: 800px; margin: 0 auto; text-align: center; }
+        .track-box { display: flex; gap: 10px; justify-content: center; margin-bottom: 40px; }
+        
+        /* Ô nhập số điện thoại */
+        .track-box input { 
+            width: 100%; max-width: 400px; padding: 15px 25px; border-radius: 30px; 
+            border: 3px solid #144E5A; font-size: 16px; font-family: 'Nunito', sans-serif; 
+            font-weight: 700; outline: none; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.05);
+        }
+        .track-box input:focus { border-color: #E53935; }
+        
+        /* Nút Tìm kiếm */
+        .track-box button { 
+            background: #F6B93B; color: #144E5A; border: 3px solid #144E5A; 
+            padding: 15px 30px; border-radius: 30px; font-size: 16px; font-weight: 900; 
+            cursor: pointer; transition: 0.2s; box-shadow: 4px 4px 0px #144E5A; 
+        }
+        .track-box button:hover { transform: translateY(-3px); box-shadow: 6px 6px 0px #144E5A; background: #e5a727; }
+        
+        /* Thẻ kết quả đơn hàng */
+        .order-card { 
+            background: white; border: 3px solid #144E5A; border-radius: 20px; 
+            padding: 20px 25px; margin-bottom: 20px; text-align: left; 
+            box-shadow: 4px 4px 0px #144E5A; display: flex; justify-content: space-between; 
+            align-items: center; flex-wrap: wrap; gap: 15px; transition: 0.3s;
+        }
+        .order-card:hover { transform: translateY(-3px); box-shadow: 6px 6px 0px #144E5A; }
+        .order-info p { margin: 5px 0; color: #666; font-weight: 600; font-size: 15px; }
+        .order-info strong { color: #144E5A; font-weight: 900; }
+        
+        /* Cục hiển thị trạng thái */
+        .order-status { 
+            background: #FDFBF0; color: #144E5A; padding: 10px 20px; 
+            border-radius: 30px; font-weight: 900; border: 2px dashed #144E5A; 
+            font-size: 15px; text-transform: uppercase; text-align: center;
+        }
+        .status-done { background: #2ecc71; color: white; border: 2px solid #27ae60; }
+        .status-cancel { background: #E53935; color: white; border: 2px solid #c0392b; }
+    </style>
+</head>
+<body>
+    <!-- Giữ lại Header logo -->
+    <header class="header">
+        <a href="index.html">
+            <img src="logo.png" alt="Food Mốtt Logo" class="logo-img">
+        </a>
+    </header>
+
+    <section class="track-section">
+        <h1 class="headline" style="font-size: 40px;">TRA CỨU <span class="highlight">ĐƠN HÀNG</span></h1>
+        <p class="subheadline" style="margin-bottom: 30px;">Nhập số điện thoại bạn đã dùng để đặt món nhé!</p>
+        
+        <div class="track-box">
+            <input type="text" id="phone-input" placeholder="Ví dụ: 0987654321">
+            <button onclick="findOrder()">🔍 Tìm Đơn</button>
+        </div>
+
+        <!-- Khung chứa kết quả -->
+        <div id="order-results"></div>
+    </section>
+
+    <script>
+        async function findOrder() {
+            const phone = document.getElementById('phone-input').value.trim();
+            const resultDiv = document.getElementById('order-results');
+            
+            if (!phone) {
+                alert("Bạn chưa nhập số điện thoại kìa!");
+                return;
+            }
+
+            resultDiv.innerHTML = '<p style="font-weight: 800; color: #144E5A; font-size: 18px;">⏳ Đang tìm kiếm đơn hàng...</p>';
+
+            try {
+                // Gọi API lấy dữ liệu
+                const response = await fetch(`http://localhost:5000/api/orders/track/${phone}`);
+                const orders = await response.json();
+
+                if (!response.ok) throw new Error(orders.error);
+
+                if (orders.length === 0) {
+                    resultDiv.innerHTML = `
+                        <div style="text-align: center; margin-top: 30px;">
+                            <h3 style="color: #E53935; font-weight: 900;">Không tìm thấy đơn hàng! 🕵️</h3>
+                            <p style="color: #666; font-weight: 600;">Số điện thoại này chưa có lịch sử đặt món hoặc bạn nhập sai số rồi.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                resultDiv.innerHTML = ''; // Xóa chữ đang tìm
+                
+                // In từng đơn hàng ra màn hình
+                orders.forEach(order => {
+                    let statusClass = '';
+                    if (order.status === 'Đã hoàn thành') statusClass = 'status-done';
+                    if (order.status === 'Đã hủy') statusClass = 'status-cancel';
+
+                    resultDiv.innerHTML += `
+                        <div class="order-card">
+                            <div class="order-info">
+                                <p><strong>Mã đơn:</strong> #${order.id}</p>
+                                <p><strong>Khách hàng:</strong> ${order.name}</p>
+                                <p><strong>Thời gian đặt:</strong> ${order.date || 'Vừa đặt'}</p>
+                                <p style="font-size: 18px; margin-top: 10px;">
+                                    <strong>Tổng thanh toán: <span style="color: #E53935;">${order.total.toLocaleString('vi-VN')}đ</span></strong>
+                                </p>
+                            </div>
+                            <div>
+                                <div class="order-status ${statusClass}">${order.status}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+            } catch (error) {
+                resultDiv.innerHTML = '<p style="color: #E53935; font-weight: 800; font-size: 18px;">❌ Không thể kết nối đến máy chủ!</p>';
+            }
+        }
+    </script>
+</body>
+</html>
