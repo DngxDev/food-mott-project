@@ -6,8 +6,7 @@ let cart = [];
 // 1. Kéo dữ liệu từ Backend Python
 async function loadMenuFromDatabase() {
     try {
-        const response = await fetch('http://localhost:5000/api/foods');
-        menuData = await response.json(); 
+const response = await fetch('https://food-mott-project.onrender.com/api/foods');        menuData = await response.json(); 
         renderMenu(menuData); // In ra màn hình sau khi lấy được dữ liệu
     } catch (error) {
         console.error("Lỗi:", error);
@@ -187,7 +186,7 @@ checkoutForm.addEventListener('submit', async (event) => {
         submitBtn.innerText = "⏳ Đang xử lý...";
         submitBtn.disabled = true;
 
-        const response = await fetch('http://localhost:5000/api/orders', {
+        const response = await fetch('https://food-mott-project.onrender.com/api/orders', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(orderData)
