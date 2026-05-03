@@ -47,7 +47,7 @@ def get_foods():
                 'price': float(row.Price),
                 'category': row.Category,
                 'image_url': row.ImageURL,
-                'desc': row.Description  # SỬA Ở ĐÂY: Đóng gói thêm biến 'desc' gửi cho Frontend
+                'desc': row.Description,
                 'is_available': True if row.IsAvailable == 1 else False
             })
             
