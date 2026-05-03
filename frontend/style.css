@@ -63,7 +63,7 @@ body {
 .slides img {
     width: 100%;
     height: 100%;
-    object-fit: cover;      /* Ép ảnh lấp đầy khung mà không bị méo */
+    object-fit: fill;      /* Ép ảnh lấp đầy khung mà không bị méo */
     object-position: center; /* Luôn lấy phần giữa của ảnh làm tâm */
 }
 
@@ -312,7 +312,7 @@ body {
 .food-image img {
     width: 100%;
     height: 100%;
-    object-fit: fill; 
+    object-fit: cover; 
     object-position: center;
     transition: transform 0.3s ease;
     display: block;
