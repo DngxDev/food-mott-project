@@ -4,6 +4,14 @@ import pyodbc
 import os
 from werkzeug.utils import secure_filename
 import platform # Thêm thư viện này để nhận diện hệ điều hành
+import cloudinary
+import cloudinary.uploader
+
+cloudinary.config(
+  cloud_name = "dbzhal9wz",
+  api_key = "264482735596646",
+  api_secret = "JXaLjxx3Znl-JMVaXuvmLEo9Zw0"
+)
 
 app = Flask(__name__)
 CORS(app)
@@ -243,9 +251,8 @@ def update_product(product_id):
 
         if file:
             # Nếu có upload ảnh mới
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            image_url = f"static/uploads/{filename}"
+            upload_result = cloudinary.uploader.upload(file)
+            image_url = upload_result['secure_url']
             
             cursor.execute("""
                 UPDATE Products 
