@@ -181,11 +181,12 @@ def login():
         cursor = conn.cursor()
         
         # Kiểm tra tài khoản trong Database
-        cursor.execute("SELECT Username FROM Users WHERE Username = ? AND Password = ?", (username, password))
-        user = cursor.fetchone()
+        cursor.execute("SELECT Username, Password FROM Users WHERE Username = ? AND Password = ?", (username, password))
+user = cursor.fetchone()
 
         if user:
             # Nếu đúng, trả về một "token" giả định để lưu ở trình duyệt
+            if user.Username == input_username and user.Password == input_password:
             return jsonify({'message': 'Đăng nhập thành công', 'token': 'access_granted_admin'}), 200
         else:
             return jsonify({'message': 'Sai tài khoản hoặc mật khẩu!'}), 401
