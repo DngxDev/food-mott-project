@@ -85,7 +85,7 @@
 
             try {
                 // Gọi API lấy dữ liệu
-                const response = await fetch(`http://localhost:5000/api/orders/track/${phone}`);
+                const response = await fetch(`http://food-mott-project.onrender.com/api/orders/track/${phone}`);
                 const orders = await response.json();
 
                 if (!response.ok) throw new Error(orders.error);
