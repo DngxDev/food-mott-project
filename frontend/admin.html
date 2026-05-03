@@ -346,7 +346,11 @@ async function deleteProduct(productId) {
             fetchProducts(); // Tải lại bảng món ăn
         }
         // Hàm gửi lệnh Khóa/Mở bán món ăn
-async function toggleProduct(productId) {
+} catch (error) {
+            alert("Lỗi kết nối đến máy chủ!");
+        }
+    }
+        async function toggleProduct(productId) {
     if(!confirm("Bạn có chắc chắn muốn thay đổi trạng thái bán của món này không?")) return;
     
     try {
@@ -364,11 +368,6 @@ async function toggleProduct(productId) {
     } catch (error) { 
         alert("Lỗi kết nối đến máy chủ!"); 
     }
-}
-         else {
-            alert(result.error);
-        }
-    } catch (error) { alert("Lỗi kết nối!"); }
 }
 // Hàm lấy số liệu thống kê từ API
 async function fetchStats() {
