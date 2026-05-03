@@ -312,7 +312,7 @@ body {
 .food-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Chống méo ảnh */
+    object-fit: fill; 
     object-position: center;
     transition: transform 0.3s ease;
     display: block;
