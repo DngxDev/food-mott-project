@@ -63,7 +63,6 @@ def create_order():
         customer_address = data.get('customerAddress')
         total_amount = data.get('totalAmount')
         cart_items = data.get('cart')
-
         # Kết nối SQL Server
         conn = pyodbc.connect(conn_str)
         cursor = conn.cursor()
@@ -99,7 +98,7 @@ def get_orders():
         cursor = conn.cursor()
         
         # Lấy các đơn hàng mới nhất xếp lên đầu
-        cursor.execute("SELECT OrderID, CustomerName, CustomerPhone, TotalAmount, OrderDate, Status FROM Orders ORDER BY OrderDate DESC")
+        cursor.execute("SELECT OrderID, CustomerName, CustomerPhone, TotalAmount, OrderDate, Status, CustomerAddress FROM Orders ORDER BY OrderDate DESC")
         
         orders = []
         for row in cursor.fetchall():
@@ -107,6 +106,7 @@ def get_orders():
                 'id': row.OrderID,
                 'customerName': row.CustomerName,
                 'phone': row.CustomerPhone,
+                'address': row.CustomerAddress,
                 'total': float(row.TotalAmount),
                 # Chuyển đổi định dạng thời gian cho dễ đọc, tránh bị lỗi JSON
                 'date': row.OrderDate.strftime("%d/%m/%Y %H:%M") if row.OrderDate else "N/A",
