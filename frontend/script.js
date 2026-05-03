@@ -27,7 +27,7 @@ function renderMenu(foods) {
         
         // --- PHẦN MỚI: Xử lý đường dẫn ảnh ---
         // Nếu database có ảnh thì nối thêm link localhost:5000, nếu không thì dùng ảnh mặc định
-        const imageUrl = food.image_url ? `http://localhost:5000/${food.image_url}` : 'logo.png';
+        const imageUrl = food.image_url ? `http://food-mott-project.onrender.com/${food.image_url}` : 'logo.png';
         
         // Ưu tiên dùng mô tả từ Database (nếu có), nếu không có mới dùng câu mặc định
         let shortDesc = food.desc || "Đậm vị, thơm ngon";
