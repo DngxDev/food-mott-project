@@ -36,7 +36,8 @@ def get_foods():
         conn = pyodbc.connect(conn_str)
         cursor = conn.cursor()
         
-        cursor.execute("SELECT ProductID, ProductName, Price, Category, ImageURL FROM Products")
+        # SỬA Ở ĐÂY: Thêm Description vào câu SELECT
+        cursor.execute("SELECT ProductID, ProductName, Price, Category, ImageURL, Description FROM Products")
         
         foods = []
         for row in cursor.fetchall():
@@ -45,7 +46,8 @@ def get_foods():
                 'name': row.ProductName,
                 'price': float(row.Price),
                 'category': row.Category,
-                'image_url': row.ImageURL
+                'image_url': row.ImageURL,
+                'desc': row.Description  # SỬA Ở ĐÂY: Đóng gói thêm biến 'desc' gửi cho Frontend
             })
             
         return jsonify(foods)
