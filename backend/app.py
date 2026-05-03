@@ -174,25 +174,32 @@ def get_stats():
 def login():
     try:
         data = request.json
-        username = data.get('username')
-        password = data.get('password')
+        # 1. Lấy dữ liệu người dùng nhập từ form
+        u_input = data.get('username')
+        p_input = data.get('password')
 
         conn = pyodbc.connect(conn_str)
         cursor = conn.cursor()
-        
-        # Kiểm tra tài khoản trong Database
-        cursor.execute("SELECT Username, Password FROM Users WHERE Username = ? AND Password = ?", (username, password))
-user = cursor.fetchone()
+
+        # 2. SQL Server tìm tài khoản (không phân biệt hoa thường)
+        cursor.execute("SELECT Username, Password FROM Users WHERE Username = ? AND Password = ?", (u_input, p_input))
+        user = cursor.fetchone()
 
         if user:
-            # Nếu đúng, trả về một "token" giả định để lưu ở trình duyệt
-            if user.Username == username and user.Password == password:
-            return jsonify({'message': 'Đăng nhập thành công', 'token': 'access_granted_admin'}), 200
-        else:
-            return jsonify({'message': 'Sai tài khoản hoặc mật khẩu!'}), 401
+            # 3. CHỐT CHẶN CUỐI: Python so sánh chính xác từng ký tự (phân biệt hoa thường)
+            # Lưu ý: user.Username là dữ liệu gốc trong Database
+            if user.Username == u_input and user.Password == p_input:
+                return jsonify({'message': 'Đăng nhập thành công', 'token': 'access_granted_admin'}), 200
+            else:
+                # Nếu SQL tìm thấy nhưng Python thấy không khớp hoa thường
+                return jsonify({'message': 'Sai tài khoản hoặc mật khẩu! (Lưu ý chữ hoa/thường)'}), 401
+        
+        return jsonify({'message': 'Sai tài khoản hoặc mật khẩu!'}), 401
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-        # 9. API Lấy chi tiết một đơn hàng cụ thể (Dành cho Admin)
+    finally:
+        conn.close()
 @app.route('/api/admin/orders/<int:order_id>', methods=['GET'])
 def get_order_details(order_id):
     try:
