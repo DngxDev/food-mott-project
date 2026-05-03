@@ -73,8 +73,7 @@ function renderMenu(foods) {
         // --- BẮT ĐẦU FIX LỖI ẢNH ---
     let finalImageUrl = "";
     // Lấy dữ liệu từ DB (dùng || để đề phòng API trả về chữ i thường hoặc hoa)
-    let imgFromDB = food.ImageUrl || food.imageUrl; 
-
+    let imgFromDB = food.image_url; 
     if (imgFromDB && imgFromDB.startsWith("http")) {
         finalImageUrl = imgFromDB; // Nếu là link Cloudinary -> Xài luôn
     } else {
