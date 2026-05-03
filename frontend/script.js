@@ -69,9 +69,20 @@ function renderMenu(foods) {
         }
 
         // --- Đưa biến btnHtml vào trong innerHTML ---
+        // --- BẮT ĐẦU FIX LỖI ẢNH ---
+    let finalImageUrl = "";
+    // Lấy dữ liệu từ DB (dùng || để đề phòng API trả về chữ i thường hoặc hoa)
+    let imgFromDB = food.ImageUrl || food.imageUrl; 
+
+    if (imgFromDB && imgFromDB.startsWith("http")) {
+        finalImageUrl = imgFromDB; // Nếu là link Cloudinary -> Xài luôn
+    } else {
+        finalImageUrl = `https://food-mott-project.onrender.com/${imgFromDB}`; // Nếu link cũ -> Mới ghép
+    }
+    // --- KẾT THÚC FIX LỖI ẢNH ---
         card.innerHTML = `
             <div class="food-image">
-                <img src="${imageUrl}" alt="${food.name}">
+                <img src="${finalImageUrl}" alt="${food.name}">
             </div>
             <div class="food-info" style="padding: 15px; text-align: center;">
                 <h3 class="food-name" style="margin-top: 0; color: #144E5A; font-size: 18px;">${food.name}</h3>
