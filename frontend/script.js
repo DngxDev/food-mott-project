@@ -7,18 +7,33 @@ let cart = [];
 async function loadMenuFromDatabase() {
     try {
         const response = await fetch('https://food-mott-project.onrender.com/api/foods');
-        const data = await response.json(); 
-        
-        // Kiểm tra nếu data là mảng thì mới gán, tránh lỗi forEach
-        if (Array.isArray(data)) {
-            menuData = data;
-            renderMenu(menuData);
-        } else {
-            console.error("Dữ liệu không đúng định dạng:", data);
+        const result = await response.json(); 
+
+        let finalData = [];
+
+        // Nếu result vốn dĩ đã là mảng
+        if (Array.isArray(result)) {
+            finalData = result;
+        } 
+        // Nếu Backend bọc mảng trong một thuộc tính tên là 'foods' hoặc 'data'
+        else if (result.foods && Array.isArray(result.foods)) {
+            finalData = result.foods;
         }
+        else if (result.data && Array.isArray(result.data)) {
+            finalData = result.data;
+        }
+
+        if (finalData.length > 0) {
+            menuData = finalData;
+            renderMenu(finalData);
+        } else {
+            console.error("Dữ liệu nhận về không chứa danh sách món ăn hợp lệ:", result);
+            menuContainer.innerHTML = `<p style="text-align:center; width:100%;">Thực đơn hiện đang trống hoặc có lỗi cấu trúc dữ liệu.</p>`;
+        }
+
     } catch (error) {
-        console.error("Lỗi:", error);
-        menuContainer.innerHTML = `<p style="text-align:center; color:#E53935; font-weight:bold; width: 100%;">Không thể tải thực đơn. Hãy chắc chắn Backend Python đang chạy!</p>`;
+        console.error("Lỗi kết nối:", error);
+        menuContainer.innerHTML = `<p style="text-align:center; color:red; width:100%;">Không thể kết nối đến máy chủ!</p>`;
     }
 }
 
