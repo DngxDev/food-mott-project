@@ -319,6 +319,9 @@ async function fetchProducts() {
                     <td>${p.category}</td>
                     <td>
                         <button onclick="openEditModal(${JSON.stringify(p).replace(/"/g, '&quot;')})" style="background:#f39c12; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer; margin-right:5px;">Sửa ✏️</button>
+                         <button onclick="toggleProduct(${p.id})" style="background:${p.is_available === false ? '#2ecc71' : '#95a5a6'}; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer; margin-right:5px;">
+    ${p.is_available === false ? 'Mở bán 🔓' : 'Báo hết 🔒'}
+</button>
                         <button onclick="deleteProduct(${p.id})" style="background:#e74c3c; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">Xóa 🗑️</button>
                     </td>
                 </tr>
@@ -329,9 +332,7 @@ async function fetchProducts() {
 
 // Hàm gửi lệnh xóa món ăn
 async function deleteProduct(productId) {
-    <button onclick="toggleProduct(${p.id})" style="background:${p.is_available === false ? '#2ecc71' : '#95a5a6'}; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer; margin-right:5px;">
-    ${p.is_available === false ? 'Mở bán 🔓' : 'Báo hết 🔒'}
-</button>
+   
     if(!confirm("Bạn có chắc chắn muốn xóa món này khỏi menu không?")) return;
 
     try {
