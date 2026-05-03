@@ -37,7 +37,7 @@ def get_foods():
         cursor = conn.cursor()
         
         # SỬA Ở ĐÂY: Thêm Description vào câu SELECT
-        cursor.execute("SELECT ProductID, ProductName, Price, Category, ImageURL, Description FROM Products")
+        cursor.execute("SELECT ProductID, ProductName, Price, Category, ImageURL, Description, IsAvailable FROM Products")
         
         foods = []
         for row in cursor.fetchall():
@@ -48,6 +48,7 @@ def get_foods():
                 'category': row.Category,
                 'image_url': row.ImageURL,
                 'desc': row.Description  # SỬA Ở ĐÂY: Đóng gói thêm biến 'desc' gửi cho Frontend
+                'is_available': True if row.IsAvailable == 1 else False
             })
             
         return jsonify(foods)
@@ -315,6 +316,26 @@ def track_order(phone):
             })
             
         return jsonify(orders), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+        # 11. API Khóa/Mở khóa món ăn (Dành cho Admin)
+@app.route('/api/admin/products/<int:product_id>/toggle', methods=['PUT'])
+def toggle_product(product_id):
+    try:
+        conn = pyodbc.connect(conn_str)
+        cursor = conn.cursor()
+        
+        # Xem món này đang khóa hay mở
+        cursor.execute("SELECT IsAvailable FROM Products WHERE ProductID = ?", (product_id,))
+        current_status = cursor.fetchone()[0]
+        
+        # Đảo ngược trạng thái: Đang 1 (Còn) thì biến thành 0 (Hết), và ngược lại
+        new_status = 0 if current_status == 1 else 1
+        
+        cursor.execute("UPDATE Products SET IsAvailable = ? WHERE ProductID = ?", (new_status, product_id))
+        conn.commit()
+        
+        return jsonify({'message': 'Cập nhật trạng thái thành công!'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 if __name__ == '__main__':
