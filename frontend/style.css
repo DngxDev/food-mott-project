@@ -63,7 +63,7 @@ body {
 .slides img {
     width: 100%;
     height: 100%;
-    object-fit: fill;      /* Ép ảnh lấp đầy khung mà không bị méo */
+    object-fit: cover;      /* Ép ảnh lấp đầy khung mà không bị méo */
     object-position: center; /* Luôn lấy phần giữa của ảnh làm tâm */
 }
 
