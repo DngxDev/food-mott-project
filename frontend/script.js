@@ -42,8 +42,7 @@ if (food.is_available === false) {
     btnHtml = `<button class="btn" style="background-color: #ccc; color: #666; cursor: not-allowed; width: 100%; border: none; padding: 10px; border-radius: 5px; font-weight: bold;" disabled>Hết Hàng</button>`;
 } else {
     // Chỗ này bạn dán cái thẻ <button> Thêm vào giỏ CŨ của bạn vào đây
-                <button class="btn-add" onclick="addToCart(${food.id})" style="width: 100%; padding: 10px; background: #f39c12; color: white; font-weight: bold; border: none; border-radius: 20px; cursor: pointer; transition: 0.2s;">Thêm vào giỏ</button>
-}
+btnHtml = `<button class="btn-add" onclick="addToCart(${food.id})" style="width: 100%; padding: 10px; background: #f39c12; color: white; border: none; border-radius: 5px; font-weight: bold;">Thêm vào giỏ</button>`;}
         // --- PHẦN MỚI: Cấu trúc lại HTML để chứa thẻ <img> ---
         card.innerHTML = `
             <div class="food-image">
