@@ -28,8 +28,13 @@
             <h1 class="headline">BÁNH MÌ <span class="highlight">ĐẬM VỊ MỐT</span></h1>
             <p class="subheadline">Menu đa dạng từ bánh mì xá xíu, xôi thập cẩm đến trà chanh thanh mát. Ăn là ghiền, gọi là ship liền!</p>
             <div class="buttons">
-                <button class="btn btn-primary">🛒 Đặt món ngay</button>
-                <button class="btn btn-outline">▶ Xem menu</button>
+                <div class="buttons">
+    <!-- Nút Đặt món ngay -->
+    <button class="btn btn-primary" onclick="document.getElementById('thuc-don').scrollIntoView({behavior: 'smooth'})">🛒 Đặt món ngay</button>
+    
+    <!-- Nút Xem menu -->
+    <button class="btn btn-outline" onclick="document.getElementById('thuc-don').scrollIntoView({behavior: 'smooth'})">▶ Xem menu</button>
+</div>
             </div>
             <div class="promo-container">
                 <div class="promo-box">
@@ -71,7 +76,7 @@
             <input type="text" placeholder="Bạn muốn ăn bánh mì, xôi hay uống trà?">
         </div>
     </section>
-<section class="menu-section">
+<section class="menu-section" id="thuc-don">
         <h2 class="section-title">Thực Đơn Của Mốtt</h2>
         <div class="category-filters">
             <button class="filter-btn active" id="btn-all" onclick="filterCategory('all')">Tất cả</button>
