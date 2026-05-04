@@ -310,6 +310,28 @@ if (searchInput) {
         renderMenu(filteredFoods);
     });
 }
+// Tải ưu đãi từ Backend lên trang chủ
+async function loadFrontPromotions() {
+    try {
+        const res = await fetch('https://food-mott-project.onrender.com/api/promotions');
+        const data = await res.json();
+        
+        // Gắn chữ vào giao diện
+        if(data.promo1) {
+            document.getElementById('front-promo1-title').innerText = data.promo1.title;
+            document.getElementById('front-promo1-desc').innerText = data.promo1.desc;
+        }
+        if(data.promo2) {
+            document.getElementById('front-promo2-title').innerText = data.promo2.title;
+            document.getElementById('front-promo2-desc').innerText = data.promo2.desc;
+        }
+    } catch (error) { console.error("Lỗi tải ưu đãi:", error); }
+}
+
+// Gọi hàm này ngay khi trang index vừa load
+document.addEventListener("DOMContentLoaded", () => {
+    loadFrontPromotions();
+});
 
 // CHẠY HÀM KÉO DỮ LIỆU NGAY KHI VỪA MỞ WEB
 window.onload = function() {

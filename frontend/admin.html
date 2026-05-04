@@ -95,6 +95,25 @@ td button { margin: 0 !important; white-space: nowrap; padding: 8px 12px; }
         </button>
     </form>
 </div>
+<div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+    <h3 style="color: #144E5A; margin-top: 0; margin-bottom: 15px;">🎁 Quản Lý Ưu Đãi Trang Chủ</h3>
+    <div style="display: flex; gap: 20px;">
+        <!-- Form Ưu đãi 1 -->
+        <div style="flex: 1; padding: 15px; border: 1px dashed #ccc; border-radius: 8px;">
+            <h4 style="margin-top: 0; color: #f39c12;">Ưu đãi 1 (Ví dụ: Freeship)</h4>
+            <input type="text" id="promo1-title" placeholder="Tiêu đề (VD: Freeship)" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+            <input type="text" id="promo1-desc" placeholder="Mô tả (VD: Nội khu...)" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+        </div>
+        
+        <!-- Form Ưu đãi 2 -->
+        <div style="flex: 1; padding: 15px; border: 1px dashed #ccc; border-radius: 8px;">
+            <h4 style="margin-top: 0; color: #e74c3c;">Ưu đãi 2 (Ví dụ: Tặng Trà Chanh)</h4>
+            <input type="text" id="promo2-title" placeholder="Tiêu đề" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+            <input type="text" id="promo2-desc" placeholder="Mô tả" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+        </div>
+    </div>
+    <button onclick="savePromotions()" style="margin-top: 15px; width: 100%; background-color: #f39c12; color: white; padding: 12px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px;">💾 LƯU THAY ĐỔI ƯU ĐÃI</button>
+</div>
         <!-- CSS cho thẻ thống kê -->
 <style>
     .stats-container {
@@ -515,24 +534,55 @@ document.getElementById('add-product-form').addEventListener('submit', async (e)
         alert("Lỗi kết nối!");
     }
 });
+// Lấy dữ liệu ưu đãi hiển thị lên ô input khi vào trang
+async function loadAdminPromotions() {
+    try {
+        const res = await fetch('https://food-mott-project.onrender.com/api/promotions');
+        const data = await res.json();
+        if(data.promo1) {
+            document.getElementById('promo1-title').value = data.promo1.title;
+            document.getElementById('promo1-desc').value = data.promo1.desc;
+        }
+        if(data.promo2) {
+            document.getElementById('promo2-title').value = data.promo2.title;
+            document.getElementById('promo2-desc').value = data.promo2.desc;
+        }
+    } catch (error) { console.error("Lỗi tải ưu đãi:", error); }
+}
+
+// Lưu dữ liệu ưu đãi mới xuống Backend
+async function savePromotions() {
+    const data = {
+        promo1: {
+            title: document.getElementById('promo1-title').value,
+            desc: document.getElementById('promo1-desc').value
+        },
+        promo2: {
+            title: document.getElementById('promo2-title').value,
+            desc: document.getElementById('promo2-desc').value
+        }
+    };
+
+    try {
+        const res = await fetch('https://food-mott-project.onrender.com/api/admin/promotions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        alert(result.message || "Đã lưu ưu đãi thành công!");
+    } catch (error) {
+        alert("Có lỗi xảy ra khi lưu!");
+    }
+}
 // Cập nhật lại window.onload để trang vừa mở là hiện số luôn
-window.onload = refreshDashboard;
-// Cập nhật lại window.onload để chạy thêm hàm fetchStats
+// Chạy tất cả các hàm này khi trang admin vừa mở lên
 window.onload = function() {
-    fetchOrders();
-    fetchProducts();
-    fetchStats(); // Thêm dòng này
+    if (typeof fetchOrders === "function") fetchOrders();
+    if (typeof fetchProducts === "function") fetchProducts();
+    if (typeof fetchStats === "function") fetchStats();
+    if (typeof loadAdminPromotions === "function") loadAdminPromotions(); // GỌI HÀM ƯU ĐÃI LÊN NÈ!
 };
-// Cập nhật lại window.onload để chạy cả 2 hàm khi mở trang
-window.onload = function() {
-    fetchOrders();
-    fetchProducts();
-};
-        // Tự động tải dữ liệu khi mở trang
-       window.onload = function() {
-            fetchOrders();
-            fetchProducts();
-        };
     </script>
 
 </body>
