@@ -79,12 +79,11 @@ def create_order():
         cursor = conn.cursor()
 
         # Lưu vào bảng Orders và lấy ra mã Đơn hàng (OrderID) vừa được tạo
-        cursor.execute("""
-            INSERT INTO Orders (CustomerName, CustomerPhone, CustomerAddress, TotalAmount)
+       cursor.execute("""
+            INSERT INTO Orders (CustomerName, CustomerPhone, CustomerAddress, TotalAmount, OrderDate)
             OUTPUT INSERTED.OrderID
-            VALUES (?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, DATEADD(hour, 7, GETUTCDATE()))
         """, (customer_name, customer_phone, customer_address, total_amount))
-        
         order_id = cursor.fetchone()[0]
 
         # Vòng lặp: Lưu từng món ăn trong giỏ vào bảng OrderDetails
@@ -174,17 +173,17 @@ def get_stats():
         # 2. Doanh thu HÔM NAY (Lưu ý: Nếu cột ngày đặt hàng của bạn tên khác, hãy đổi chữ OrderDate nhé)
         cursor.execute("""
             SELECT ISNULL(SUM(TotalAmount), 0) FROM Orders 
-            WHERE CAST(OrderDate AS DATE) = CAST(GETDATE() AS DATE)
+            WHERE CAST(OrderDate AS DATE) = CAST(DATEADD(hour, 7, GETUTCDATE()) AS DATE)
         """)
-        daily_revenue = float(cursor.fetchone()[0])
+        daily_revenue = float(cursor.fetchone()[0] or 0)
 
         # 3. Doanh thu THÁNG NÀY
         cursor.execute("""
             SELECT ISNULL(SUM(TotalAmount), 0) FROM Orders 
-            WHERE MONTH(OrderDate) = MONTH(GETDATE()) 
-            AND YEAR(OrderDate) = YEAR(GETDATE())
+            WHERE MONTH(OrderDate) = MONTH(DATEADD(hour, 7, GETUTCDATE())) 
+            AND YEAR(OrderDate) = YEAR(DATEADD(hour, 7, GETUTCDATE()))
         """)
-        monthly_revenue = float(cursor.fetchone()[0])
+        monthly_revenue = float(cursor.fetchone()[0] or 0)
 
         # 4. TỔNG Doanh thu từ trước đến nay
         cursor.execute("SELECT ISNULL(SUM(TotalAmount), 0) FROM Orders")
