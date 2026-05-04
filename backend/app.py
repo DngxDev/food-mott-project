@@ -373,5 +373,45 @@ def toggle_product(product_id):
         return jsonify({'message': 'Cập nhật trạng thái thành công!'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+        # ==========================================
+# API LẤY VÀ CẬP NHẬT ƯU ĐÃI
+# ==========================================
+
+# 1. Khách hàng/Admin xem ưu đãi
+@app.route('/api/promotions', methods=['GET'])
+def get_promotions():
+    try:
+        conn = pyodbc.connect(conn_str)
+        cursor = conn.cursor()
+        cursor.execute("SELECT PromoKey, Title, Description FROM Promotions")
+        promos = cursor.fetchall()
+        
+        result = {}
+        for row in promos:
+            result[row[0]] = {'title': row[1], 'desc': row[2]}
+            
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# 2. Admin cập nhật ưu đãi
+@app.route('/api/admin/promotions', methods=['POST'])
+def update_promotions():
+    try:
+        data = request.json
+        conn = pyodbc.connect(conn_str)
+        cursor = conn.cursor()
+        
+        if 'promo1' in data:
+            cursor.execute("UPDATE Promotions SET Title = ?, Description = ? WHERE PromoKey = 'promo1'",
+                           (data['promo1']['title'], data['promo1']['desc']))
+        if 'promo2' in data:
+            cursor.execute("UPDATE Promotions SET Title = ?, Description = ? WHERE PromoKey = 'promo2'",
+                           (data['promo2']['title'], data['promo2']['desc']))
+                           
+        conn.commit()
+        return jsonify({'message': 'Cập nhật ưu đãi thành công!'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
