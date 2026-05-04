@@ -79,10 +79,10 @@ def create_order():
         cursor = conn.cursor()
 
         # Lưu vào bảng Orders và lấy ra mã Đơn hàng (OrderID) vừa được tạo
-       cursor.execute("""
-            INSERT INTO Orders (CustomerName, CustomerPhone, CustomerAddress, TotalAmount, OrderDate)
-            OUTPUT INSERTED.OrderID
-            VALUES (?, ?, ?, ?, DATEADD(hour, 7, GETUTCDATE()))
+        cursor.execute("""
+        INSERT INTO Orders (CustomerName, CustomerPhone, CustomerAddress, TotalAmount, OrderDate)
+        OUTPUT INSERTED.OrderID
+        VALUES (?, ?, ?, ?, DATEADD(hour, 7, GETUTCDATE()))
         """, (customer_name, customer_phone, customer_address, total_amount))
         order_id = cursor.fetchone()[0]
 
