@@ -167,13 +167,34 @@ def get_stats():
         conn = pyodbc.connect(conn_str)
         cursor = conn.cursor()
         
-        # Đếm tổng số đơn hàng và cộng tổng tiền từ bảng Orders
-        cursor.execute("SELECT COUNT(OrderID), SUM(TotalAmount) FROM Orders")
-        row = cursor.fetchone()
-        
+   # 1. Đếm tổng số đơn hàng
+        cursor.execute("SELECT COUNT(OrderID) FROM Orders")
+        total_orders = cursor.fetchone()[0] or 0
+
+        # 2. Doanh thu HÔM NAY (Lưu ý: Nếu cột ngày đặt hàng của bạn tên khác, hãy đổi chữ OrderDate nhé)
+        cursor.execute("""
+            SELECT ISNULL(SUM(TotalAmount), 0) FROM Orders 
+            WHERE CAST(OrderDate AS DATE) = CAST(GETDATE() AS DATE)
+        """)
+        daily_revenue = float(cursor.fetchone()[0])
+
+        # 3. Doanh thu THÁNG NÀY
+        cursor.execute("""
+            SELECT ISNULL(SUM(TotalAmount), 0) FROM Orders 
+            WHERE MONTH(OrderDate) = MONTH(GETDATE()) 
+            AND YEAR(OrderDate) = YEAR(GETDATE())
+        """)
+        monthly_revenue = float(cursor.fetchone()[0])
+
+        # 4. TỔNG Doanh thu từ trước đến nay
+        cursor.execute("SELECT ISNULL(SUM(TotalAmount), 0) FROM Orders")
+        total_revenue = float(cursor.fetchone()[0])
+
         return jsonify({
-            'totalOrders': row[0] if row[0] else 0,
-            'totalRevenue': float(row[1]) if row[1] else 0
+            'totalOrders': total_orders,
+            'dailyRevenue': daily_revenue,
+            'monthlyRevenue': monthly_revenue,
+            'totalRevenue': total_revenue
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 500

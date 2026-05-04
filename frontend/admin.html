@@ -119,14 +119,29 @@ td button { margin: 0 !important; white-space: nowrap; padding: 8px 12px; }
 
 <!-- HTML hiển thị con số -->
 <div class="stats-container">
-    <div class="stat-card bg-blue">
-        <h3>TỔNG ĐƠN HÀNG</h3>
-        <p id="stat-orders">0</p>
-    </div>
-    <div class="stat-card bg-green">
-        <h3>TỔNG DOANH THU</h3>
-        <p id="stat-revenue">0đ</p>
-    </div>
+    <!-- Ô 1: Tổng đơn hàng (Giữ nguyên class màu xanh dương) -->
+        <div class="stat-card bg-blue">
+            <h3>TỔNG ĐƠN HÀNG</h3>
+            <p id="stat-orders">0</p>
+        </div>
+
+        <!-- Ô 2: Doanh thu hôm nay (Mới - Thêm màu Cam) -->
+        <div class="stat-card" style="background: linear-gradient(135deg, #f39c12, #e67e22);">
+            <h3>HÔM NAY</h3>
+            <p id="daily-revenue">0đ</p>
+        </div>
+
+        <!-- Ô 3: Doanh thu tháng này (Mới - Thêm màu Tím) -->
+        <div class="stat-card" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">
+            <h3>THÁNG NÀY</h3>
+            <p id="monthly-revenue">0đ</p>
+        </div>
+
+        <!-- Ô 4: Tổng doanh thu (Giữ nguyên class màu xanh lá) -->
+        <div class="stat-card bg-green">
+            <h3>TỔNG DOANH THU</h3>
+            <p id="stat-revenue">0đ</p>
+        </div>
 </div>
         
         <!-- Sửa onclick từ fetchOrders() thành refreshDashboard() -->
@@ -374,9 +389,13 @@ async function fetchStats() {
     try {
         const response = await fetch('https://food-mott-project.onrender.com/api/admin/stats');
         const data = await response.json();
-        
+
+        // Cập nhật dữ liệu cho cả 4 ô mới
         document.getElementById('stat-orders').innerText = data.totalOrders;
+        document.getElementById('daily-revenue').innerText = data.dailyRevenue.toLocaleString('vi-VN') + 'đ';
+        document.getElementById('monthly-revenue').innerText = data.monthlyRevenue.toLocaleString('vi-VN') + 'đ';
         document.getElementById('stat-revenue').innerText = data.totalRevenue.toLocaleString('vi-VN') + 'đ';
+        
     } catch (error) {
         console.error("Lỗi khi lấy thống kê:", error);
     }
