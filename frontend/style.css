@@ -725,3 +725,7 @@ body {
   text-decoration: none;
   display: inline-block;
 }
+a.maildev {
+   background-color: LightBlue;
+  color: white;
+}
