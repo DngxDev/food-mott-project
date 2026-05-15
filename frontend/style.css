@@ -717,15 +717,13 @@ body {
         height: 24px;
     }
 }
-.maildev {
-     background-color: #f44336;
+
+.maildev a {
+   background-color: #ff1100;
   color: white;
   padding: 5px 25px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
-}
-a.maildev {
-   background-color: LightBlue;
-  color: white;
+    border-radius: 20px;
 }
